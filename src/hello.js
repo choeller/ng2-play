@@ -12,7 +12,10 @@ export class Hello {
     constructor() {
         this.name = 'World'; //TODO: how to declare a field with its default value (so I don't need a constructor)?
         setTimeout(() => {
-          this.name = 'NEW World'
+          this.name = 'NEW World!!!'
         }, 2000);
     }
 }
+
+
+

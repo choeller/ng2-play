@@ -1,0 +1,26 @@
+<style>
+
+    div.task {
+        background-color: #42A5F5;
+        height: 62px;
+        padding: 1px;
+        margin-bottom: 15px;
+        box-shadow: 3px 5px 14px rgba(0,0,0,.8);
+        cursor: pointer;
+    }
+    h3 {
+        text-align: center;
+    }
+
+</style>
+
+<script>
+
+</script>
+
+<div class="task"  draggable="true"  (dragstart)="drag(event)">
+    <h3>  {{ taskdata.text }}</h3>
+</div>
+
+
+

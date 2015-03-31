@@ -1,0 +1,43 @@
+<style>
+    @import url('../css/angular-material.css');
+
+    .board > div {
+        background-color: #E3F2FD;
+        min-height: 500px;
+    }
+    h1 {
+        text-align: center
+    }
+</style>
+
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var id = ev.dataTransfer.getData("text");
+
+      //  var elem = document.querySelector("my-app").shadowRoot.querySelector("#" + id);
+                //.shadowRoot.querySelector('#'+id)
+
+        ev.target.appendChild(elem);
+    }
+
+
+</script>
+
+<div class="board" layout="row" layout-margin layout-fill layout-padding>
+    <div id="div1" flex>
+    <h1>Backlog</h1>
+        <template for #task [of]="tasks">
+                <task [taskData]="task"></task>
+        </template>
+    </div>
+    <div (drop)="drop('IN_PROGRESS')" ondragover="allowDrop(event)" flex id="div2"> </div>
+    <div (drop)="drop('FINISHED')" ondragover="allowDrop(event)"flex> </div>
+    <div flex> </div>
+</div>
+
+<br>
