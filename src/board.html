@@ -19,11 +19,12 @@
     <span>{{taskMap}}</span>
     <span>{{newState}}</span>
     <span>{{currentlyDragged}}</span>
+    <span>{{newIndex}}</span>
 
 
 <div class="board" layout="row" layout-margin layout-fill layout-padding>
     <template for #state [of]="states">
-        <div id="{{state}}" (drop)="drop(state, $event)" (dragover)="onBoardDragOver(state, $event)" flex>
+        <div id="{{state}}" (drop)="drop(state)" (dragover)="onBoardDragOver(state, $event)" flex>
         <h1>{{state}}</h1>
             <template for #task [of]="taskMap[state]">
                     <task (dropped)="onDroppedOnTask($event)" (draggedover)="onTaskDraggedOver($event)" (dragstarted)="onDragStarted($event)" [taskData]="task"></task>

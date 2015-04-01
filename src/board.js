@@ -30,6 +30,20 @@ export class Board {
     }
 
     getTasks(state) {
+        this.taskMap[state] = this.taskMap[state] || [];
+        return this.taskMap[state];
+    }
+
+    moveTo(task, state, index) {
+        var oldList = this.getTasks(task.state);
+        _.pullAt(oldList, [oldList.indexOf(task)]);
+        task.state = state;
+        index = index || this.getTasks(state).length;
+        this.getTasks(state).splice(index, 0, task);
+    }
+
+/*
+    getTasks(state) {
 
         var result =  this.tasks.filter((task) => {
             return task.state === state;
@@ -44,9 +58,10 @@ export class Board {
 
         return result;
     }
-
+*/
     onBoardDragOver(state, event) {
         this.newState = state;
+        this.newIndex = null;
         event.preventDefault();
     }
 
@@ -55,27 +70,33 @@ export class Board {
     }
 
     onTaskDraggedOver(task) {
-        if (task !== this.currentlyDragged) {
+    if (task !== this.currentlyDragged) {
             this.currentlyOver = task;
             this.newState = task.state;
+            this.newIndex=this.getTasks(task.state).indexOf(task)+1;
         }
     }
+
 
     onDroppedOnTask(task) {
         this.drop(task.state)
     }
 
-    drop(state, event) {
-        console.log("DROP ", this.currentlyDragged)
-        this.currentlyDragged.state = this.newState;
-        this.taskMap[this.newState].push(this.currentlyDragged)
-       // this.taskMap = this.calculateTaskMap();
+    drop(state) {
+
+        this.moveTo(this.currentlyDragged, state, this.newIndex);
+
+
+       /* this.currentlyDragged.state = this.newState;
+        this.getTasks(this.newState).push(this.currentlyDragged)
+        this.calculateTaskMap();
         if (this.currentlyOver !== null) {
            var newIndex =  this.tasks.indexOf(this.currentlyOver);
            var oldIndex =  this.tasks.indexOf(this.currentlyDragged);
             this.tasks.move(oldIndex, newIndex);
         }
         this.currentlyOver = null;
+        */
     }
 }
 
