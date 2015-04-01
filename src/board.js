@@ -10,39 +10,31 @@ import {Task} from 'components/task';
 })
 @Template({
   url: 'board.html',
- //   inline: `Bla`,
   directives: [Task, For]
 })
-// Component controller
 export class Board {
 
     constructor() {
         this.tasks = [{state: 'BACKLOG', text: "Blubb"}, {state: 'BACKLOG', text: "Bla"}, {state: 'OPEN', text: "OPEN"}];
-        this.calculateTaskMap();
-        this.placeholderTask = {state: 'BACKLOG', text: "Drop here", isPlaceholder: true}
-        this.states = ['BACKLOG', 'OPEN', 'IN_PROGRESS', 'CLOSED'];
-    }
-
-    calculateTaskMap() {
         this.taskMap = _.groupBy(this.tasks, function(task) {
             return task.state;
         });
+        this.states = ['BACKLOG', 'OPEN', 'IN_PROGRESS', 'CLOSED'];
     }
 
     getTasks(state) {
+        this.taskMap[state] = this.taskMap[state] || [];
+        return this.taskMap[state];
+    }
 
-        var result =  this.tasks.filter((task) => {
-            return task.state === state;
-        });
-
-        result.forEach( (element, index) => {
-            if (element === this.currentlyOver) {
-                this.placeholderTask.state = this.currentlyOver.state;
-                result.splice(index+1, 0, this.placeholderTask);
-            }
-        });
-
-        return result;
+    moveTo(task, state, predecessor) {
+        console.log(predecessor)
+        var oldList = this.getTasks(task.state);
+        var newList = this.getTasks(state);
+        _.pullAt(oldList, [oldList.indexOf(task)]);
+        task.state = state;
+        var index = newList.indexOf(predecessor) != -1 ? newList.indexOf(predecessor) + 1 : newList.length;
+        this.getTasks(state).splice(index, 0, task);
     }
 
     onBoardDragOver(state, event) {
@@ -55,9 +47,14 @@ export class Board {
     }
 
     onTaskDraggedOver(task) {
-        if (task !== this.currentlyDragged) {
+    if (task !== this.currentlyDragged) {
             this.currentlyOver = task;
             this.newState = task.state;
+        }
+    }
+    onTaskDraggedOut(task) {
+    if (task !== this.currentlyDragged) {
+            this.currentlyOver = null;
         }
     }
 
@@ -65,16 +62,8 @@ export class Board {
         this.drop(task.state)
     }
 
-    drop(state, event) {
-        console.log("DROP ", this.currentlyDragged)
-        this.currentlyDragged.state = this.newState;
-        this.taskMap[this.newState].push(this.currentlyDragged)
-       // this.taskMap = this.calculateTaskMap();
-        if (this.currentlyOver !== null) {
-           var newIndex =  this.tasks.indexOf(this.currentlyOver);
-           var oldIndex =  this.tasks.indexOf(this.currentlyDragged);
-            this.tasks.move(oldIndex, newIndex);
-        }
+    drop(state) {
+        this.moveTo(this.currentlyDragged, state, this.currentlyOver);
         this.currentlyOver = null;
     }
 }

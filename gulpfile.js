@@ -43,7 +43,7 @@ gulp.task('html', function () {
 });
 gulp.task('css', function () {
     return gulp.src(PATHS.src.css)
-        .pipe(gulp.dest('dist/css'));
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('libs', ['angular2'], function () {

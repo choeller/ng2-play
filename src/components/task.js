@@ -1,6 +1,7 @@
 import {Component, Template} from 'angular2/angular2';
 import {If} from 'angular2/angular2';
 import {EventEmitter} from 'angular2/src/core/annotations/di'
+import {Placeholder} from 'components/placeholder';
 
 // Annotation section
 @Component({
@@ -10,7 +11,8 @@ import {EventEmitter} from 'angular2/src/core/annotations/di'
     }
 })
 @Template({
-  url: 'components/task.html'
+  url: 'components/task.html',
+    directives: [Placeholder]
 })
 // Component controller
 export class Task
@@ -30,11 +32,17 @@ export class Task
     }
 
     ondragover(event) {
-        event.preventDefault();
-
+        this.isOver = true;
         this.draggedOver(this.taskdata);
+        event.preventDefault();
     }
+
+    ondragleave(event){
+        this.isOver = false;
+    }
+
     ondrop(event) {
+        this.isOver = false;
         this.dropped(this.taskdata);
     }
 
