@@ -18,8 +18,15 @@ export class Board {
 
     constructor() {
         this.tasks = [{state: 'BACKLOG', text: "Blubb"}, {state: 'BACKLOG', text: "Bla"}, {state: 'OPEN', text: "OPEN"}];
+        this.calculateTaskMap();
         this.placeholderTask = {state: 'BACKLOG', text: "Drop here", isPlaceholder: true}
         this.states = ['BACKLOG', 'OPEN', 'IN_PROGRESS', 'CLOSED'];
+    }
+
+    calculateTaskMap() {
+        this.taskMap = _.groupBy(this.tasks, function(task) {
+            return task.state;
+        });
     }
 
     getTasks(state) {
@@ -38,7 +45,8 @@ export class Board {
         return result;
     }
 
-    onBoardDragOver(event) {
+    onBoardDragOver(state, event) {
+        this.newState = state;
         event.preventDefault();
     }
 
@@ -49,6 +57,7 @@ export class Board {
     onTaskDraggedOver(task) {
         if (task !== this.currentlyDragged) {
             this.currentlyOver = task;
+            this.newState = task.state;
         }
     }
 
@@ -57,7 +66,10 @@ export class Board {
     }
 
     drop(state, event) {
-        this.currentlyDragged.state = state;
+        console.log("DROP ", this.currentlyDragged)
+        this.currentlyDragged.state = this.newState;
+        this.taskMap[this.newState].push(this.currentlyDragged)
+       // this.taskMap = this.calculateTaskMap();
         if (this.currentlyOver !== null) {
            var newIndex =  this.tasks.indexOf(this.currentlyOver);
            var oldIndex =  this.tasks.indexOf(this.currentlyDragged);
