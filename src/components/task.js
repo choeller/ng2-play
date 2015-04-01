@@ -1,5 +1,6 @@
 import {Component, Template} from 'angular2/angular2';
 import {If} from 'angular2/angular2';
+import {EventEmitter} from 'angular2/src/core/annotations/di'
 
 // Annotation section
 @Component({
@@ -12,21 +13,29 @@ import {If} from 'angular2/angular2';
   url: 'components/task.html'
 })
 // Component controller
-export class Task {
-
-    constructor() {
-      this.title =  'World';
-      this.state = 'BACK_LOG';
+export class Task
+{
+    constructor(
+        @EventEmitter('draggedover') draggedOver:Function,
+        @EventEmitter('dropped') dropped:Function,
+        @EventEmitter('dragstarted') dragstarted:Function
+    ) {
+        this.dragstarted = dragstarted;
+        this.draggedOver = draggedOver;
+        this.dropped = dropped;
     }
 
-    setTitle(title) {
-      this.title = title
+    ondragstart(event) {
+        this.dragstarted(this.taskdata);
     }
 
-    drag($event) {
-            console.log("Start ", $event)
+    ondragover(event) {
+        event.preventDefault();
 
-         //   ev.dataTransfer.setData("text", ev.target.id);
+        this.draggedOver(this.taskdata);
     }
+    ondrop(event) {
+        this.dropped(this.taskdata);
+    }
+
 }
-

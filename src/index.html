@@ -7,6 +7,7 @@
     <script src="lib/traceur-runtime.js"></script>
     <script src="lib/es6-module-loader-sans-promises.src.js"></script>
     <script src="lib/extension-register.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.js"></script>
     <script>
         register(System);
         <!-- TODO: how to get rid of this line? -->
@@ -15,6 +16,19 @@
     <!-- Angular2-related imports -->
     <script src="lib/angular2.js"></script>
     <script src="lib/zone.js"></script>
+
+    <script>
+        Array.prototype.move = function (old_index, new_index) {
+            if (new_index >= this.length) {
+                var k = new_index - this.length;
+                while ((k--) + 1) {
+                    this.push(undefined);
+                }
+            }
+            this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+            return this; // for testing purposes
+        };
+    </script>
 
 </head>
 <body>
