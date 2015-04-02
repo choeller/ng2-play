@@ -10,23 +10,16 @@ import {Task} from 'components/task';
 })
 @Template({
   url: 'board.html',
- //   inline: `Bla`,
   directives: [Task, For]
 })
-// Component controller
 export class Board {
 
     constructor() {
         this.tasks = [{state: 'BACKLOG', text: "Blubb"}, {state: 'BACKLOG', text: "Bla"}, {state: 'OPEN', text: "OPEN"}];
-        this.calculateTaskMap();
-        this.placeholderTask = {state: 'BACKLOG', text: "Drop here", isPlaceholder: true}
-        this.states = ['BACKLOG', 'OPEN', 'IN_PROGRESS', 'CLOSED'];
-    }
-
-    calculateTaskMap() {
         this.taskMap = _.groupBy(this.tasks, function(task) {
             return task.state;
         });
+        this.states = ['BACKLOG', 'OPEN', 'IN_PROGRESS', 'CLOSED'];
     }
 
     getTasks(state) {
@@ -34,31 +27,16 @@ export class Board {
         return this.taskMap[state];
     }
 
-    moveTo(task, state, index) {
+    moveTo(task, state, predecessor) {
+        console.log(predecessor)
         var oldList = this.getTasks(task.state);
+        var newList = this.getTasks(state);
         _.pullAt(oldList, [oldList.indexOf(task)]);
         task.state = state;
-        index = index || this.getTasks(state).length;
+        var index = newList.indexOf(predecessor) != -1 ? newList.indexOf(predecessor) + 1 : newList.length;
         this.getTasks(state).splice(index, 0, task);
     }
 
-/*
-    getTasks(state) {
-
-        var result =  this.tasks.filter((task) => {
-            return task.state === state;
-        });
-
-        result.forEach( (element, index) => {
-            if (element === this.currentlyOver) {
-                this.placeholderTask.state = this.currentlyOver.state;
-                result.splice(index+1, 0, this.placeholderTask);
-            }
-        });
-
-        return result;
-    }
-*/
     onBoardDragOver(state, event) {
         this.newState = state;
         this.newIndex = null;
@@ -76,6 +54,11 @@ export class Board {
             this.newIndex=this.getTasks(task.state).indexOf(task)+1;
         }
     }
+    onTaskDraggedOut(task) {
+    if (task !== this.currentlyDragged) {
+            this.currentlyOver = null;
+        }
+    }
 
 
     onDroppedOnTask(task) {
@@ -83,20 +66,8 @@ export class Board {
     }
 
     drop(state) {
-
-        this.moveTo(this.currentlyDragged, state, this.newIndex);
-
-
-       /* this.currentlyDragged.state = this.newState;
-        this.getTasks(this.newState).push(this.currentlyDragged)
-        this.calculateTaskMap();
-        if (this.currentlyOver !== null) {
-           var newIndex =  this.tasks.indexOf(this.currentlyOver);
-           var oldIndex =  this.tasks.indexOf(this.currentlyDragged);
-            this.tasks.move(oldIndex, newIndex);
-        }
+        this.moveTo(this.currentlyDragged, state, this.currentlyOver);
         this.currentlyOver = null;
-        */
     }
 }
 

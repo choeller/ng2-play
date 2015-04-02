@@ -3,23 +3,12 @@
     div.task {
         background-color: #42A5F5;
         height: 62px;
-        padding: 1px;
+        padding: 16px;
+        font-size: 24px;
         margin-bottom: 15px;
         box-shadow: 3px 5px 14px rgba(0,0,0,.8);
         cursor: pointer;
-    }
-
-    div.placeholder {
-        background-color: #ededed;
-        border-width:3px;
-        border-style:dashed;
-        border-radius: 8px;
-        border-color: #4f4f4f;
-        box-shadow: none;
-    }
-
-    h3 {
-        text-align: center;
+        text-align: center
     }
 
 </style>
@@ -32,9 +21,11 @@
      draggable="true"
      (drop)="ondrop($event)"
      (dragover)="ondragover($event)"
+     (dragleave)="ondragleave($event)"
      (dragstart)="ondragstart($event)">
-    <h3>  {{ taskdata.text }}</h3>
+      {{ taskdata.text }}
 </div>
+<placeholder [hidden]="!isOver"></placeholder>
 
 
 
