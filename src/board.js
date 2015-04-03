@@ -15,7 +15,7 @@ import {Task} from 'components/task';
 export class Board {
 
     constructor() {
-        this.tasks = [{state: 'BACKLOG', text: "Blubb"}, {state: 'BACKLOG', text: "Bla"}, {state: 'OPEN', text: "OPEN"}];
+        this.tasks = [{state: 'BACKLOG', text: "Learn Angular 2.0"}, {state: 'BACKLOG', text: "Call Mom"}, {state: 'OPEN', text: "OPEN"}];
         this.taskMap = _.groupBy(this.tasks, function(task) {
             return task.state;
         });
@@ -28,7 +28,9 @@ export class Board {
     }
 
     moveTo(task, state, predecessor) {
-        console.log(predecessor)
+        if (predecessor == task) {
+            return;
+        }
         var oldList = this.getTasks(task.state);
         var newList = this.getTasks(state);
         _.pullAt(oldList, [oldList.indexOf(task)]);
@@ -39,7 +41,7 @@ export class Board {
 
     onBoardDragOver(state, event) {
         this.newState = state;
-        this.newIndex = null;
+        this.currentlyOver = null;
         event.preventDefault();
     }
 
@@ -48,11 +50,8 @@ export class Board {
     }
 
     onTaskDraggedOver(task) {
-    if (task !== this.currentlyDragged) {
             this.currentlyOver = task;
             this.newState = task.state;
-            this.newIndex=this.getTasks(task.state).indexOf(task)+1;
-        }
     }
     onTaskDraggedOut(task) {
     if (task !== this.currentlyDragged) {
@@ -60,12 +59,12 @@ export class Board {
         }
     }
 
-
     onDroppedOnTask(task) {
         this.drop(task.state)
     }
 
     drop(state) {
+        console.log(state)
         this.moveTo(this.currentlyDragged, state, this.currentlyOver);
         this.currentlyOver = null;
     }

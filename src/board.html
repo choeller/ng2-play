@@ -1,34 +1,35 @@
 <style>
     @import url('../css/angular-material.css');
 
-    .board > div {
-        background-color: #E3F2FD;
-        min-height: 500px;
+    body {
+        color: white;
     }
-    h1 {
+
+    .board > div {
+        background-color: #9C27B0;
+    }
+    .heading {
+        background-color: #7B1FA2;
+        font-size: 2em;
+        padding: 13px;
         text-align: center
+    }
+    .board-column {
+        padding: 25px 10px 10px 10px;
+        min-height: 500px;
     }
 </style>
 
-<script>
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-</script>
-
-    <span>{{taskMap}}</span>
-    <span>{{newState}}</span>
-    <span>{{currentlyDragged}}</span>
-    <span>{{currentlyOver}}</span>
-    <span>{{newIndex}}</span>
-
-<div class="board" layout="row" layout-margin layout-fill layout-padding>
+<div class="board" layout="row" layout-margin layout-fill >
     <template for #state [of]="states">
-        <div id="{{state}}" (drop)="drop(state)" (dragover)="onBoardDragOver(state, $event)" flex>
-        <h1>{{state}}</h1>
-            <template for #task [of]="taskMap[state]">
-                    <task (dropped)="onDroppedOnTask($event)" (draggedover)="onTaskDraggedOver($event)" (dragstarted)="onDragStarted($event)" [taskData]="task"></task>
-            </template>
+        <div flex>
+            <div class="heading">{{state}}</div>
+            <div class="board-column" id="{{state}}" (drop)="drop(state)" (dragover)="onBoardDragOver(state, $event)">
+                <template for #task [of]="taskMap[state]">
+                    <task (dropped)="onDroppedOnTask($event)" (draggedover)="onTaskDraggedOver($event)"
+                          (dragstarted)="onDragStarted($event)" [taskData]="task"></task>
+                </template>
+            </div>
         </div>
     </template>
 </div>
